@@ -86,7 +86,7 @@ ALTER TABLE ubicacioncliente ADD FOREIGN KEY (ciudad_id) REFERENCES ciudad(id);
 
 -- 5. Normalizar Proveedores para tener ContactoProveedores en otra tabla.
 -- Se elimina el atributo contacto de la tabla proveedores y se crea la tabla ContactoProveedores.
-ALTER TABLE Proveedores DROP COLUMN contacto;
+ALTER TABLE proveedores DROP COLUMN telefono;
 
 CREATE TABLE IF NOT EXISTS ContactoProveedor(
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -118,6 +118,8 @@ ALTER TABLE TiposProductos ADD FOREIGN KEY (categoria_padre_id) REFERENCES Tipos
 --8. Normalizar Pedidos y DetallesPedido para evitar inconsistencias de precios.
 --El atributo total en Pedidos puede tener inconsistencias por lo que este podira ser calculado a partir de los detalles de pedido.
 ALTER TABLE Pedidos DROP COLUMN total;
+
+ALTER TABLE proveedores DROP COLUMN direccion;
 
 --9. Usar una relación de muchos a muchos para Empleados y Proveedores .
 --Al tener una relación de michos a muchos se crea una tabla intermedia EmpleadosProveedores que las relacione.
