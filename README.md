@@ -8,3 +8,4 @@ definidas por el usuario y triggers.
 3. [Inserción de Datos](MYSQL/insert.sql)
 2. Consultas: 
     - [Normalización](MYSQL/CONSULTAS/normalizacion.sql)
+    - [Joins](MYSQL/CONSULTAS/joins.sql)
