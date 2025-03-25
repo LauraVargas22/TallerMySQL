@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS historialPedidos (
     accion VARCHAR(50),
     comentario TEXT,
     FOREIGN KEY (pedido_id) REFERENCES Pedidos(id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS historialDetallesPedido(
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,27 +22,27 @@ CREATE TABLE IF NOT EXISTS historialDetallesPedido(
     FOREIGN KEY (historial_id) REFERENCES historialPedidos(id),
     FOREIGN KEY (detalle_pedido_id) REFERENCES DetallesPedido(id),
     FOREIGN KEY (producto_id) REFERENCES Productos(id)
-)
+);
 
 -- 2. Evaluar la tabla Clientes para eliminar datos redundantes y normalizar hasta 3NF.
-ALTER TABLE clientes DROP COLUMN nombre;
-ALTER TABLE clientes ADD COLUMN primer_nombre VARCHAR(50);
-ALTER TABLE clientes ADD COLUMN segundo_nombre VARCHAR(50) NULL;
-ALTER TABLE clientes ADD COLUMN primer_apellido VARCHAR(50);
-ALTER TABLE clientes ADD COLUMN segundo_apellido VARCHAR(50) NULL;
+ALTER TABLE Clientes DROP COLUMN nombre;
+ALTER TABLE Clientes ADD COLUMN primer_nombre VARCHAR(50);
+ALTER TABLE Clientes ADD COLUMN segundo_nombre VARCHAR(50) NULL;
+ALTER TABLE Clientes ADD COLUMN primer_apellido VARCHAR(50);
+ALTER TABLE Clientes ADD COLUMN segundo_apellido VARCHAR(50) NULL;
 
 -- 3. Separar la tabla Empleados en una tabla de DatosEmpleados y otra para Puestos .
 --Eliminamos los datos de la tabla principal empleados
-ALTER TABLE empleados DROP COLUMN puesto;
-ALTER TABLE empleados DROP COLUMN fecha_contratacion;
-ALTER TABLE empleados DROP COLUMN salario;
-ALTER TABLE empleados ADD COLUMN apellido VARCHAR(50);
+ALTER TABLE Empleados DROP COLUMN puesto;
+ALTER TABLE Empleados DROP COLUMN fecha_contratacion;
+ALTER TABLE Empleados DROP COLUMN salario;
+ALTER TABLE Empleados ADD COLUMN apellido VARCHAR(50);
 
 --Creamos la tabla de puestos
 CREATE TABLE IF NOT EXISTS Puestos(
     id INT PRIMARY KEY AUTO_INCREMENT,
     puesto VARCHAR(50)
-)
+);
 
 --Creamos la tabla de datos empleados
 CREATE TABLE IF NOT EXISTS DatosEmpleado(
@@ -53,36 +53,36 @@ CREATE TABLE IF NOT EXISTS DatosEmpleado(
     fecha_contratacion DATE,
     FOREIGN KEY (empleado_id) REFERENCES Empleados(id),
     FOREIGN KEY (puesto_id) REFERENCES Puestos(id)
-)
+);
 
 -- 4. Revisar la relación Clientes y UbicacionCliente para evitar duplicación de datos.
 --Se eliminaron los atributos ciudad, estado y país de ubicación cliente creando tablas para cada uno de ellos.
 ALTER TABLE UbicacionCliente DROP COLUMN ciudad;
-ALTER TABLE ubicacioncliente DROP COLUMN estado;
-ALTER TABLE ubicacioncliente DROP COLUMN pais;
+ALTER TABLE UbicacionCliente DROP COLUMN estado;
+ALTER TABLE UbicacionCliente DROP COLUMN pais;
 
 CREATE TABLE IF NOT EXISTS Pais(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(50),
     codigo_iso VARCHAR(10) UNIQUE
-)
+);
 
 CREATE TABLE IF NOT EXISTS estado(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(50),
     pais_id INT,
     FOREIGN KEY (pais_id) REFERENCES Pais(id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS ciudad(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(50),
     estado_id INT,
-    FOREIGN KEY (estado_id) REFERENCES Estado(id)
-)
+    FOREIGN KEY (estado_id) REFERENCES estado(id)
+);
 
-ALTER TABLE ubicacioncliente ADD COLUMN ciudad_id INT;
-ALTER TABLE ubicacioncliente ADD FOREIGN KEY (ciudad_id) REFERENCES ciudad(id);
+ALTER TABLE UbicacionCliente ADD COLUMN ciudad_id INT;
+ALTER TABLE UbicacionCliente ADD FOREIGN KEY (ciudad_id) REFERENCES ciudad(id);
 
 -- 5. Normalizar Proveedores para tener ContactoProveedores en otra tabla.
 -- Se elimina el atributo contacto de la tabla proveedores y se crea la tabla ContactoProveedores.
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS ContactoProveedor(
     proveedor_id INT,
     contacto VARCHAR(100),
     FOREIGN KEY (proveedor_id) REFERENCES Proveedores(id)
-)
+);
 
 --Se normaliza el nombre del proveedor
 ALTER TABLE Proveedores DROP COLUMN nombre;
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS Telefonos(
     cliente_id INT,
     telefono VARCHAR(20),
     FOREIGN KEY (cliente_id) REFERENCES Clientes(id)
-)
+);
 
 --7. Transformar TiposProductos en una relación categórica jerárquica
 --Una relación categórica jerárquica me permite definir la relación padre-hijo entre los tipos de productos.
@@ -119,7 +119,7 @@ ALTER TABLE TiposProductos ADD FOREIGN KEY (categoria_padre_id) REFERENCES Tipos
 --El atributo total en Pedidos puede tener inconsistencias por lo que este podira ser calculado a partir de los detalles de pedido.
 ALTER TABLE Pedidos DROP COLUMN total;
 
-ALTER TABLE proveedores DROP COLUMN direccion;
+ALTER TABLE Proveedores DROP COLUMN direccion;
 
 --9. Usar una relación de muchos a muchos para Empleados y Proveedores .
 --Al tener una relación de michos a muchos se crea una tabla intermedia EmpleadosProveedores que las relacione.
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS EmpleadosProveedores(
     proveedor_id INT,
     FOREIGN KEY (empleado_id) REFERENCES Empleados(id),
     FOREIGN KEY (proveedor_id) REFERENCES Proveedores(id)
-)
+);
 
 --10. Convertir la tabla UbicacionCliente en una relación genérica de Ubicaciones.
 --Se crea una tabla de ubicaciones que almacene las ubicaciones de los clientes, empleados y proveedores.
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS Ubicaciones(
     ciudad_id INT,
     codigo_postal VARCHAR(10),
     FOREIGN KEY (ciudad_id) REFERENCES ciudad(id)
-)
+);
 
 DROP TABLE UbicacionCliente;
 
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS proveedorUbicacion(
     ubicacion_id INT,
     FOREIGN KEY (proveedor_id) REFERENCES Proveedores(id),
     FOREIGN KEY (ubicacion_id) REFERENCES Ubicaciones(id)
-)
+);
 
 --Crear tabla para empleados
 CREATE TABLE IF NOT EXISTS empleadoUbicacion(
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS empleadoUbicacion(
     ubicacion_id INT,
     FOREIGN KEY (empleado_id) REFERENCES Empleados(id),
     FOREIGN KEY (ubicacion_id) REFERENCES Ubicaciones(id)
-)
+);
 
 --Crear tabla para clientes
 CREATE TABLE IF NOT EXISTS clienteUbicacion(
@@ -167,4 +167,4 @@ CREATE TABLE IF NOT EXISTS clienteUbicacion(
     ubicacion_id INT,
     FOREIGN KEY (cliente_id) REFERENCES Clientes(id),
     FOREIGN KEY (ubicacion_id) REFERENCES Ubicaciones(id)
-)
+);
