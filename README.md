@@ -9,5 +9,5 @@ definidas por el usuario y triggers.
     - [Normalización](MYSQL/CONSULTAS/normalizacion.sql)
     - [Joins](MYSQL/CONSULTAS/joins.sql)
     - [Consultas Simples](MYSQL/CONSULTAS/consultasSimples.sql)
-    
+    - [Consultas Multitabla](MYSQL/CONSULTAS/consultasMultitabla.sql)
 3. [Inserción de Datos](MYSQL/insert.sql)
