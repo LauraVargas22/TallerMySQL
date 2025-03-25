@@ -5,8 +5,9 @@ normalización, joins, consultas complejas, subconsultas, procedimientos almacen
 definidas por el usuario y triggers.
 
 1. [Creación Base de datos y sus Tablas](MYSQL/db.sql)
-3. [Inserción de Datos](MYSQL/insert.sql)
 2. Consultas: 
     - [Normalización](MYSQL/CONSULTAS/normalizacion.sql)
     - [Joins](MYSQL/CONSULTAS/joins.sql)
     - [Consultas Simples](MYSQL/CONSULTAS/consultasSimples.sql)
+    
+3. [Inserción de Datos](MYSQL/insert.sql)

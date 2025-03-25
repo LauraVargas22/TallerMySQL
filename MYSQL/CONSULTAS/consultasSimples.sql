@@ -26,4 +26,53 @@ INNER JOIN Productos p2 ON p.id = p2.proveedor_id
 GROUP BY p.nombre, p.apellido
 HAVING COUNT(p2.id) > 5;
 
---5. Listar clientes que no tienen dirección registrada en UbicacionCliente .
+-- 5. Listar clientes que no tienen dirección registrada en UbicacionCliente
+SELECT c.primer_nombre, c.primer_apellido, c.id AS cliente_id
+FROM Clientes c
+LEFT JOIN ClienteUbicacion cu ON c.id = cu.cliente_id
+WHERE cu.ubicacion_id IS NULL;
+
+-- 6. Calcular el total de ventas por cada cliente
+SELECT 
+    c.id AS cliente_id, 
+    c.primer_nombre, 
+    c.primer_apellido, 
+    COALESCE(SUM(de.precio), 0) AS total_ventas
+FROM Clientes c
+LEFT JOIN Pedidos p ON c.id = p.cliente_id
+LEFT JOIN DetallesPedido de ON p.id = de.pedido_id
+GROUP BY c.id, c.primer_nombre, c.primer_apellido
+ORDER BY total_ventas DESC;
+
+-- 7. Mostrar el salario promedio de los empleados
+SELECT 
+    AVG(de.salario) AS salario_promedio
+FROM Empleados e
+LEFT JOIN DatosEmpleado de ON e.id = de.empleado_id;
+
+-- 8. Consultar el tipo de productos disponibles en TiposProductos
+SELECT 
+    id AS tipo_producto_id, 
+    descripcion
+FROM TiposProductos;
+
+-- 9. Seleccionar los 3 productos más caros
+SELECT 
+    id AS producto_id, 
+    nombre, 
+    precio
+FROM Productos
+ORDER BY precio DESC
+LIMIT 3;
+
+-- 10. Consultar el cliente con el mayor número de pedidos
+SELECT 
+    c.id AS cliente_id, 
+    c.primer_nombre, 
+    c.primer_apellido, 
+    COUNT(p.id) AS numero_de_pedidos
+FROM Clientes c
+JOIN Pedidos p ON c.id = p.cliente_id
+GROUP BY c.id, c.primer_nombre, c.primer_apellido
+ORDER BY numero_de_pedidos DESC
+LIMIT 1;
