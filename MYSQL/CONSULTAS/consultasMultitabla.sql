@@ -1,28 +1,18 @@
 --1. Listar todos los pedidos y el cliente asociado.
-SELECT p.id AS id_Pedido, c.primer_nombre, c.primer_apellido, p.fecha AS fecha_pedido
+SELECT p.id AS ID_Pedido, p.fecha, c.nombre AS Cliente
 FROM Clientes c
 LEFT JOIN Pedidos p ON c.id = p.cliente_id;
-
 --2. Mostrar la ubicación de cada cliente en sus pedidos.
-SELECT Pedidos.id AS ID_Pedido, Ubicaciones.direccion AS Direccion_Cliente, ciudad.nombre AS Ciudad_Cliente, estado.nombre AS Estado_Cliente, Pais.nombre AS Pais_Cliente, Clientes.primer_nombre  AS Nombre_Cliente
-FROM Clientes
-LEFT JOIN Pedidos ON Clientes.id = Pedidos.cliente_id
-LEFT JOIN clienteUbicacion ON Clientes.id = clienteUbicacion.cliente_id
-LEFT JOIN Ubicaciones ON clienteUbicacion.ubicacion_id = Ubicaciones.id
-LEFT JOIN ciudad ON Ubicaciones.ciudad_id = ciudad.id
-LEFT JOIN estado ON ciudad.estado_id = estado.id
-LEFT JOIN Pais ON estado.pais_id = Pais.id;
+SELECT p.id AS ID_Pedido, p.fecha, c.nombre, d.direccion, d.ciudad
+FROM Clientes c
+LEFT JOIN Pedidos p ON c.id = p.cliente_id
+LEFT JOIN clientesdireccion cd ON c.id = cd.cliente_id
+LEFT JOIN direcciones d ON cd.direccion_id = d.id;
 --3. Listar productos junto con el proveedor y tipo de producto.
-SELECT 
-    p.id AS producto_id,
-    p.nombre AS nombre_producto,
-    p.precio,
-    pr.nombre AS nombre_proveedor,
-    tp.descripcion  AS tipo_producto
+SELECT p.nombre, pr.nombre, tp.tipo_nombre
 FROM Productos p
-JOIN Proveedores pr ON p.proveedor_id = pr.id
-JOIN TiposProductos tp ON p.tipo_id = tp.id
-ORDER BY tp.descripcion , p.nombre;
+JOIN proveedores pr ON p.proveedor_id = pr.id
+JOIN tiposproductos tp ON p.tipo_id = tp.id;
 --4. Consultar todos los empleados que gestionan pedidos de clientes en una ciudad específica.
 --5. Consultar los 5 productos más vendidos.
 SELECT 
@@ -35,19 +25,36 @@ GROUP BY p.id, p.nombre
 ORDER BY cantidad_total_vendida DESC
 LIMIT 5;
 --6. Obtener la cantidad total de pedidos por cliente y ciudad.
+SELECT COUNT(p.id) AS Total_Pedidos, c.nombre, d.ciudad
+FROM Pedidos p
+LEFT JOIN Clientes c ON p.cliente_id = c.id
+LEFT JOIN clientesdireccion cd ON c.id = cd.cliente_id
+LEFT JOIN direcciones d ON cd.direccion_id = d.id
+GROUP BY c.nombre, d.ciudad;
 --7. Listar clientes y proveedores en la misma ciudad.
+SELECT c.nombre, pr.nombre, d.ciudad
+FROM Direcciones d
+JOIN clientesdireccion cd ON d.id = cd.direccion_id
+JOIN clientes c ON cd.cliente_id = c.id
+JOIN proveedoresdireccion pd ON d.id = pd.direccion_id
+JOIN proveedores pr ON pd.proveedor_id = pr.id
+GROUP BY d.ciudad, pr.nombre, c.nombre;
 --8. Mostrar el total de ventas agrupado por tipo de producto.
 SELECT 
     tp.id AS tipo_producto_id,
-    tp.descripcion  AS nombre_tipo_producto,
+    tp.tipo_nombre  AS Tipo_producto,
     SUM(dp.cantidad * p.precio) AS total_ventas
 FROM TiposProductos tp
 JOIN Productos p ON tp.id = p.tipo_id
 JOIN DetallesPedido dp ON p.id = dp.producto_id
-GROUP BY tp.id, tp.descripcion 
+GROUP BY tp.id, tp.tipo_nombre 
 ORDER BY total_ventas DESC;
 --9. Listar empleados que gestionan pedidos de productos de un proveedor específico.
-
+SELECT p.id AS ID_Pedido, e.nombre AS Empleado, pr.nombre AS Proveedor
+FROM Empleados e
+JOIN Pedidos p ON e.id = p.empleado_id
+JOIN empleadosproveedores ep ON e.id = ep.empleado_id
+JOIN proveedores pr ON ep.proveedor_id = pr.id;
 --10. Obtener el ingreso total de cada proveedor a partir de los productos vendidos.
 SELECT 
     pr.id AS proveedor_id,
