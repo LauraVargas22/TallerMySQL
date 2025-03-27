@@ -10,3 +10,7 @@ definidas por el usuario y triggers.
     - [Joins](MYSQL/CONSULTAS/joins.sql)
     - [Consultas Simples](MYSQL/CONSULTAS/consultasSimples.sql)
     - [Consultas Multitabla](MYSQL/CONSULTAS/consultasMultitabla.sql)
+    - [Subconsultas](MYSQL/CONSULTAS/subconsultas.sql)
+    - [Procedimientos Almacenados](MYSQL/CONSULTAS/procedimientos.sql)
+    - [Funciones Definidas por el Usuario](MYSQL/CONSULTAS/funciones.sql)
+    - [Triggers](MYSQL/CONSULTAS/triggers.sql)
